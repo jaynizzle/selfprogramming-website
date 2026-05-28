@@ -6,5 +6,7 @@
 // };
 
 window.BUILDER_CONFIG = {
-  publishApiUrl: "https://DEINE-VERCEL-URL.vercel.app/api/update-index"
+  publishApiUrl: window.BUILDER_CONFIG = {
+  publishApiUrl: "https://github-writer-api-git-main-justyn0411-s-projects1.vercel.app/api/update-index"
+};
 };

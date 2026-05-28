@@ -1,86 +1,86 @@
-# Minimal Chat Website Builder
+# Chat Builder für GitHub Pages
 
-Das ist eine minimalistische Demo für deine Idee:
+Dieses Projekt ist die Website-Seite deines Pilots.
 
-> Die Website startet fast leer. Über einen Chat gestaltest du sie intuitiv.
+## Idee
 
-Es ist bewusst noch keine echte KI. Die Demo erkennt einfache deutsche Befehle und baut daraus eine Website im Browser.
+- `builder.html` ist der Chat-Builder.
+- `index.html` ist die veröffentlichte Website.
+- Der Builder kann die generierte Website als `index.html` in dein GitHub-Repo schreiben.
+- Dafür braucht er die separate GitHub Writer API.
 
-## Starten
+## Dateien
 
-Einfach `index.html` doppelklicken.
+```text
+index.html      Platzhalter für die veröffentlichte Website
+builder.html    Chat-Builder
+config.js       URL zur GitHub Writer API
+style.css       Builder-Design
+app.js          Builder-Logik
+README.md
+```
 
-Du brauchst keinen Server und kein GitHub.
+## GitHub Pages
 
-## Was du im Chat schreiben kannst
+Lade diese Dateien in dein Website-Repository.
+
+Danach GitHub Pages aktivieren:
+
+```text
+Settings
+→ Pages
+→ Source: Deploy from a branch
+→ Branch: main
+→ Folder: / root
+→ Save
+```
+
+Dann öffnet `/` die veröffentlichte Website.
+
+Der Builder liegt hier:
+
+```text
+https://DEINNAME.github.io/DEIN-REPO/builder.html
+```
+
+## GitHub Writer API verbinden
+
+Wenn du die API bei Vercel deployed hast, bekommst du eine URL wie:
+
+```text
+https://github-writer-api-deinname.vercel.app/api/update-index
+```
+
+Diese URL trägst du in `config.js` ein:
+
+```js
+window.BUILDER_CONFIG = {
+  publishApiUrl: "https://github-writer-api-deinname.vercel.app/api/update-index"
+};
+```
+
+Danach `config.js` committen.
+
+## Nutzung
+
+1. Öffne `builder.html`.
+2. Schreibe z. B.:
 
 ```text
 Mach eine Landingpage für ein KI-Automationsstudio
 ```
 
-```text
-Füge eine Hero-Section mit dem Titel "Automatisiere dein Business" hinzu
-```
+3. Klicke auf `Auf main speichern`.
+4. Gib dein `ADMIN_SECRET` ein.
+5. Die API überschreibt `index.html` im `main` Branch.
+6. GitHub Pages deployed neu.
+
+## Wichtig
+
+Das ist ein Pilot. Er schreibt direkt auf `main`.
+
+Für später wäre sicherer:
 
 ```text
-Füge 3 Karten für Leistungen hinzu
-```
-
-```text
-Füge eine Sektion über Vorteile hinzu
-```
-
-```text
-Füge einen Kontaktbereich hinzu
-```
-
-```text
-Mach die Website dunkel und minimalistisch
-```
-
-```text
-Mach die Website lila
-```
-
-```text
-Ändere den Titel zu "Dein neuer Titel"
-```
-
-```text
-Ändere den Button zu "Demo buchen"
-```
-
-```text
-Rückgängig
-```
-
-```text
-Leere die Website
-```
-
-## Export
-
-Oben links gibt es den Button:
-
-```text
-HTML exportieren
-```
-
-Damit bekommst du eine einzelne HTML-Datei mit der gebauten Website.
-
-## Idee für die echte Version
-
-Diese Demo ist nur der erste visuelle Pilot.
-
-Die echte Version später wäre:
-
-```text
-Chat
-→ KI versteht Wunsch
-→ Website-Code wird geändert
-→ GitHub Branch
-→ Pull Request
-→ Preview
-→ du bestätigst
-→ live
+Chat → Branch → Pull Request → Preview → Merge
 ```

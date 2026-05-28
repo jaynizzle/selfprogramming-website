@@ -95,6 +95,12 @@ button {
   font-weight: 700;
 }
 
+.primary-mini {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
 .icon-button {
   width: 42px;
   height: 42px;

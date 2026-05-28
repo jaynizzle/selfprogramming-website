@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat Website Builder</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="canvas-shell">
+      <div class="canvas-topbar">
+        <div>
+          <span class="dot"></span>
+          <span>Live-Canvas</span>
+        </div>
+        <div class="topbar-actions">
+          <button id="previewModeButton" class="ghost-button">Preview</button>
+          <button id="exportButton" class="ghost-button">HTML exportieren</button>
+          <button id="publishButton" class="ghost-button primary-mini">Auf main speichern</button>
+        </div>
+      </div>
+
+      <div id="websiteCanvas" class="website-canvas empty">
+        <div class="empty-state">
+          <p class="small-label">Leerer Canvas</p>
+          <h1>Gestalte diese Website per Chat.</h1>
+          <p>
+            Schreib rechts zum Beispiel:
+            <br />
+            <strong>„Mach eine Landingpage für ein KI-Automationsstudio“</strong>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <aside class="chat-panel">
+      <div class="chat-header">
+        <div>
+          <p class="small-label">Builder Chat</p>
+          <h2>Was soll entstehen?</h2>
+        </div>
+        <button id="resetButton" class="icon-button" title="Neu starten">↺</button>
+      </div>
+
+      <div id="chatLog" class="chat-log">
+        <div class="message assistant">
+          <p>
+            Hi. Ich bin deine minimalistische Website-Baufläche.
+            Beschreibe einfach, was du sehen willst.
+          </p>
+        </div>
+      </div>
+
+      <div class="quick-prompts">
+        <button data-prompt="Mach eine Landingpage für ein KI-Automationsstudio">Landingpage</button>
+        <button data-prompt="Füge eine Hero-Section mit dem Titel 'Automatisiere dein Business' hinzu">Hero</button>
+        <button data-prompt="Füge 3 Karten für Leistungen hinzu">3 Karten</button>
+        <button data-prompt="Mach die Website dunkel und minimalistisch">Dark</button>
+      </div>
+
+      <form id="chatForm" class="chat-form">
+        <textarea
+          id="chatInput"
+          placeholder="Schreib z. B.: Füge eine Sektion über Vorteile hinzu..."
+          rows="3"
+        ></textarea>
+        <button type="submit">Senden</button>
+      </form>
+
+      <details class="help">
+        <summary>Beispiel-Befehle</summary>
+        <ul>
+          <li>Mach eine Landingpage für eine Fotografin</li>
+          <li>Füge eine Hero-Section mit dem Titel "..." hinzu</li>
+          <li>Füge 3 Karten für Leistungen hinzu</li>
+          <li>Füge einen Kontaktbereich hinzu</li>
+          <li>Mach die Website lila</li>
+          <li>Mach die Website dunkel</li>
+          <li>Ändere den Titel zu "..."</li>
+          <li>Leere die Website</li>
+          <li>Rückgängig</li>
+        </ul>
+      </details>
+    </aside>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

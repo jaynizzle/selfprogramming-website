@@ -4,9 +4,11 @@ const chatInput = document.getElementById("chatInput");
 const chatLog = document.getElementById("chatLog");
 const resetButton = document.getElementById("resetButton");
 const exportButton = document.getElementById("exportButton");
+const publishButton = document.getElementById("publishButton");
 const previewModeButton = document.getElementById("previewModeButton");
 
-const STORAGE_KEY = "minimal-chat-builder-state-v1";
+const STORAGE_KEY = "minimal-chat-builder-state-v2";
+const PUBLISH_API_URL = window.BUILDER_CONFIG?.publishApiUrl || "";
 
 let state = loadState();
 let history = [];
@@ -379,13 +381,21 @@ function findLastSection(types) {
   return null;
 }
 
-function exportHtml() {
-  const fullHtml = `<!DOCTYPE html>
+function buildExportHtml() {
+  const content = state.sections.length
+    ? state.sections.map(renderSection).join("\n")
+    : `<section class="site-section site-hero">
+        <p class="small-label">Leer</p>
+        <h1>Noch keine Inhalte</h1>
+        <p>Öffne den Builder und gestalte deine Website per Chat.</p>
+      </section>`;
+
+  return `<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exportierte Website</title>
+  <title>Meine Chat-Website</title>
   <style>
     body {
       margin: 0;
@@ -406,26 +416,74 @@ function exportHtml() {
     .site-section h2 { font-size: clamp(2.2rem, 5vw, 4.4rem); max-width: 760px; }
     .site-section p, .site-hero p { color: var(--canvas-muted); font-size: 1.15rem; line-height: 1.7; max-width: 680px; }
     .small-label { color: var(--accent); font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; font-weight: 900; }
-    .site-button { display: inline-flex; margin-top: 22px; padding: 15px 24px; border-radius: 999px; background: var(--accent); color: white; text-decoration: none; font-weight: 900; }
+    .site-button { display: inline-flex; align-items: center; justify-content: center; margin-top: 22px; padding: 15px 24px; border-radius: 999px; background: var(--accent); color: white; text-decoration: none; font-weight: 900; }
     .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 28px; }
     .builder-card { background: var(--canvas-card); border-radius: var(--radius); padding: 26px; }
+    .builder-card h3 { margin: 0 0 12px; font-size: 1.25rem; }
     .contact-box { background: var(--accent); color: white; border-radius: var(--radius); padding: 42px; }
     .contact-box p { color: rgba(255,255,255,.8); }
     @media (max-width: 850px) { .card-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-${state.sections.map(renderSection).join("\n")}
+${content}
 </body>
 </html>`;
+}
 
+function exportHtml() {
+  const fullHtml = buildExportHtml();
   const blob = new Blob([fullHtml], { type: "text/html" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "meine-chat-website.html";
+  link.download = "index.html";
   link.click();
   URL.revokeObjectURL(url);
+}
+
+async function publishToMain() {
+  if (!PUBLISH_API_URL || PUBLISH_API_URL.includes("DEINE-VERCEL-URL")) {
+    addMessage("assistant", "Bitte trage zuerst deine echte Vercel API URL in config.js ein.");
+    return;
+  }
+
+  if (!state.sections.length) {
+    addMessage("assistant", "Die Website ist noch leer. Erstelle zuerst Inhalte per Chat.");
+    return;
+  }
+
+  const adminSecret = prompt("Admin-Passwort eingeben:");
+
+  if (!adminSecret) {
+    addMessage("assistant", "Speichern abgebrochen.");
+    return;
+  }
+
+  const fullHtml = buildExportHtml();
+  addMessage("assistant", "Ich speichere die Website jetzt direkt als index.html in main...");
+
+  try {
+    const response = await fetch(PUBLISH_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-secret": adminSecret
+      },
+      body: JSON.stringify({ html: fullHtml })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      addMessage("assistant", "Fehler beim Speichern: " + JSON.stringify(result));
+      return;
+    }
+
+    addMessage("assistant", "Gespeichert. GitHub Pages deployed jetzt neu. Deine Startseite wird gleich aktualisiert.");
+  } catch (error) {
+    addMessage("assistant", "Netzwerkfehler beim Speichern: " + error.message);
+  }
 }
 
 chatForm.addEventListener("submit", (event) => {
@@ -455,6 +513,7 @@ resetButton.addEventListener("click", () => {
 });
 
 exportButton.addEventListener("click", exportHtml);
+publishButton.addEventListener("click", publishToMain);
 
 previewModeButton.addEventListener("click", () => {
   document.body.classList.toggle("preview-only");
